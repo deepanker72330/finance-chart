@@ -1,0 +1,14 @@
+.action-bar button {
+  padding: 5px;
+  background-color: transparent;
+  color: #6f7177;
+  border: none;
+  height: 23px;
+  width: auto;
+  text-transform: none;
+}
+
+.action-bar button:hover {
+  background-color: #4b40ee;
+  color: #ffffff;
+}
