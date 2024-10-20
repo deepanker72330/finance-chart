@@ -10,8 +10,6 @@ import { localPoint } from "@visx/event";
 import * as d3 from "d3";
 import "./Chart.css";
 import { Button } from "@mui/material";
-import Fullscreen from "@mui/icons-material/Fullscreen";
-import Compare from "@mui/icons-material/Compare";
 
 const fullData = [
   { date: new Date("2024-10-10"), value: 30000 },
@@ -32,38 +30,126 @@ const yAccessor = (d) => d.value;
 
 const dateFormatter = timeFormat("%b %d");
 
+const CompareSVG = () => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M12 22C17.5228 22 22 17.5228 22 12C22 6.47715 17.5228 2 12 2C6.47715 2 2 6.47715 2 12C2 17.5228 6.47715 22 12 22Z"
+        stroke="#6F7177"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M12 8V16"
+        stroke="#6F7177"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M8 12H16"
+        stroke="#6F7177"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+};
+
+const FullscreenSVG = () => {
+  return (
+    <svg
+      width="24"
+      height="24"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M15 3H21V9"
+        stroke="#6F7177"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M9 21H3V15"
+        stroke="#6F7177"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M21 3L14 10"
+        stroke="#6F7177"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <path
+        d="M3 21L10 14"
+        stroke="#6F7177"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  );
+};
+
 const ControlPanel = ({ onRangeChange, toggleFullscreen }) => {
   return (
     <div
       style={{
         display: "flex",
-        justifyContent: "space-between",
         margin: "10px 0 18px 40px",
+        justifyContent: "space-between",
         width: "750px",
-        height: "23px",
+        height: "33px",
         lineHeight: "22.77px",
         fontWeight: "400",
       }}
     >
       <div className="action-bar">
-        <Button onClick={toggleFullscreen} startIcon={<Fullscreen />}>
+        <Button
+          sx={{ marginRight: "31px" }}
+          onClick={toggleFullscreen}
+          startIcon={<FullscreenSVG />}
+        >
           Fullscreen
         </Button>
-        <Button startIcon={<Compare />}>Compare</Button>
+        <Button startIcon={<CompareSVG />}>Compare</Button>
       </div>
-      <div className="action-bar">
+      <div
+        className="action-bar-time"
+        sx={{
+          width: "361px",
+          height: "33px",
+          display: "flex",
+          justifyContent: "space-between",
+        }}
+      >
         <Button onClick={() => onRangeChange(1)}>1d</Button>
         <Button onClick={() => onRangeChange(3)}>3d</Button>
         <Button onClick={() => onRangeChange(7)}>1w</Button>
         <Button onClick={() => onRangeChange(30)}>1m</Button>
         <Button onClick={() => onRangeChange(180)}>6m</Button>
         <Button onClick={() => onRangeChange(365)}>1y</Button>
+        <Button onClick={() => onRangeChange(365)}>max</Button>
       </div>
     </div>
   );
 };
 
-const FinancialChart = () => {
+const FinancialChart = ({ onLastDataValueChange, onProfitChange }) => {
   const svgRef = useRef(null);
   const [tooltipData, setTooltipData] = useState(null);
   const [tooltipTop, setTooltipTop] = useState(0);
@@ -78,6 +164,17 @@ const FinancialChart = () => {
     const filteredData = fullData.filter((d) => d.date >= startDate);
     setData(filteredData);
     setDateRange(days);
+
+    if (filteredData.length > 0) {
+      const lastValue = filteredData[filteredData.length - 1].value;
+      const initialValue = filteredData[0].value;
+      const profit = lastValue - initialValue;
+
+      console.log(lastValue, profit, "Financial chart");
+
+      onLastDataValueChange(lastValue);
+      onProfitChange(profit);
+    }
   };
 
   useEffect(() => {
@@ -154,7 +251,7 @@ const FinancialChart = () => {
     }
   };
 
-  const tooltipHeight = -40;
+  const tooltipHeight = -65;
 
   return (
     <div style={{ position: "relative" }}>
@@ -195,7 +292,7 @@ const FinancialChart = () => {
               x={xBarScale(xAccessor(d))}
               y={yBarScale(yAccessor(d))}
               height={yBarScale(0) - yBarScale(yAccessor(d))}
-              width={xBarScale.bandwidth()}
+              width={xBarScale.bandwidth() / 3}
               fill="#E6E8EB"
             />
           ))}
@@ -261,6 +358,7 @@ const FinancialChart = () => {
             lineHeight: "22.77px",
             fontSize: "18px",
             fontWeight: "400",
+            zIndex: "100",
           }}
         >
           <div>

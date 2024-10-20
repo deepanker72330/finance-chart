@@ -12,7 +12,7 @@ function CustomTabPanel(props) {
       role="tabpanel"
       hidden={value !== index}
       id={`simple-tabpanel-${index}`}
-      // aria-labelledby={`simple-tab-${index}`}
+      aria-labelledby={`simple-tab-${index}`}
       {...other}
     >
       {value === index && (
@@ -31,10 +31,22 @@ function a11yProps(index) {
 
 export default function BasicTabs() {
   const [value, setValue] = useState(0);
+  const [lastDataValue, setLastDataValue] = useState(0);
+  const [profit, setProfit] = useState(0);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
+
+  const handleLastDataValueChange = (value) => {
+    setLastDataValue(value);
+    // console.log(lastDataValue)
+  };
+
+  const handleProfitChange = (profit) => {
+    setProfit(profit);
+  };
+  console.log(profit, lastDataValue, "Menu.js");
 
   return (
     <Box sx={{ width: "100%", marginTop: "40px", marginLeft: "60px" }}>
@@ -54,11 +66,20 @@ export default function BasicTabs() {
               textTransform: "none",
             },
             ".Mui-selected": {
-              color: "#4C68D7", // Highlight selected tab
+              color: "#4C68D7",
             },
           }}
         >
-          <Tab label="Summary" {...a11yProps(0)} />
+          <Tab
+            sx={{
+              fontFamily: "Circular Std",
+              fontSize: "18px",
+              fontWeight: "400",
+              lineHeight: "22.77px",
+            }}
+            label="Summary"
+            {...a11yProps(0)}
+          />
           <Tab label="Chart" {...a11yProps(1)} />
           <Tab label="Statistics" {...a11yProps(2)} />
           <Tab label="Analysis" {...a11yProps(3)} />
@@ -69,7 +90,10 @@ export default function BasicTabs() {
         Summary content
       </CustomTabPanel>
       <CustomTabPanel value={value} index={1} sx={{ marginLeft: "-40px" }}>
-        <FinancialChart />
+        <FinancialChart
+          onLastDataValueChange={handleLastDataValueChange}
+          onProfitChange={handleProfitChange}
+        />
       </CustomTabPanel>
       <CustomTabPanel value={value} index={2}>
         Statistics content

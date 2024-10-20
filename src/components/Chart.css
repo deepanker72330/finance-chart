@@ -1,14 +1,41 @@
 .action-bar button {
-  padding: 5px;
   background-color: transparent;
   color: #6f7177;
   border: none;
-  height: 23px;
-  width: auto;
+  height: 33px;
   text-transform: none;
+  padding: 5px;
 }
 
 .action-bar button:hover {
+  background-color: #e6e8eb;
+  color: #6f7177;
+}
+
+.action-bar-time button {
+  background-color: transparent;
+  color: #6f7177;
+  border: none;
+  text-transform: none;
+  min-width: 49px !important;
+  height: 33px;
+  padding: 0;
+}
+
+.action-bar-time button:hover {
   background-color: #4b40ee;
   color: #ffffff;
+}
+
+body.fullscreen-active {
+  background-color: white !important; /* Set background to white */
+  overflow: hidden; /* Prevent scrolling */
+}
+
+.fullscreen-chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  position: relative;
 }
